@@ -42,18 +42,78 @@ int main(int argc, char const *argv[])
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 
+    // Make array of verts
     float vertices[] = {
         -0.5f, -0.5f,  0.0f,
          0.5f, -0.5f,  0.0f,
          0.0f,  0.5f,  0.0f
     };
 
-    unsigned int VBO;
+    // Set up vertex buffer object
+    uint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     // Might need to go to render loop
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // Vertex shader
+    const char *vertexShaderSource = "# version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0";
+
+    uint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    // Check shader worked
+    int success;
+    char infoLog[512];
+
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" <<
+            infoLog << std::endl;
+    }
+
+
+    // Fragment shader
+    const char *fragmentShaderSource = "# version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(0.4f, 0.15f, 0.1f, 1.0f);\n"
+        "}\0";
+
+    uint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+
+    // Shader program
+    uint shaderProgram = glCreateProgram();
+
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::LINK_FAILED\n" <<
+            infoLog << std::endl;
+    }
+
+    glUseProgram(shaderProgram);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 
 
     // Render loop
