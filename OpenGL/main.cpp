@@ -10,8 +10,6 @@
 
 int main(int argc, char const *argv[])
 {
-    std::cout << "Hello, World!\n";
-
     // Update context
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -43,13 +41,34 @@ int main(int argc, char const *argv[])
     // Update viewport size on window resize
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+
+    float vertices[] = {
+        -0.5f, -0.5f,  0.0f,
+         0.5f, -0.5f,  0.0f,
+         0.0f,  0.5f,  0.0f
+    };
+
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Might need to go to render loop
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+
     // Render loop
     while(!glfwWindowShouldClose(window))
     {
+        // Input
         handleInput(window);
 
-        glfwSwapBuffers(window);
+        // Rendering
+        glClearColor(0.1f, 0.15f, 0.4f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Check events and swap buffers
         glfwPollEvents();
+        glfwSwapBuffers(window);
     }
 
     // Cleanup
