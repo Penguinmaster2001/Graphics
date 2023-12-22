@@ -12,6 +12,7 @@ int main(int argc, char const *argv[])
 {
     std::cout << "Hello, World!\n";
 
+    // Update context
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -45,6 +46,8 @@ int main(int argc, char const *argv[])
     // Render loop
     while(!glfwWindowShouldClose(window))
     {
+        handleInput(window);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -57,4 +60,12 @@ int main(int argc, char const *argv[])
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+void handleInput(GLFWwindow *window)
+{
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
 }
