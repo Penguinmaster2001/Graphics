@@ -9,6 +9,10 @@
 # include "main.h"
 
 
+# define WIN_INIT_WID 800
+# define WIN_INIT_HEI 600
+
+
 
 // Vertex shader
 const char *vertexShaderSource = "# version 330 core\n"
@@ -28,7 +32,7 @@ const char *fragmentShaderSource = "# version 330 core\n"
 
 
 
-int main(int argc, char const *argv[])
+int main(void)
 {
     // Update context
     glfwInit();
@@ -37,7 +41,7 @@ int main(int argc, char const *argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Hello, World!", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WIN_INIT_WID, WIN_INIT_HEI, "Hello, World!", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -45,7 +49,6 @@ int main(int argc, char const *argv[])
         return -1;
     }
     glfwMakeContextCurrent(window);
-    // Update viewport size on window resize
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 
@@ -56,9 +59,6 @@ int main(int argc, char const *argv[])
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
-    // Set size of the viewport
-    glViewport(0, 0, 800, 600);
 
 
 
@@ -85,8 +85,8 @@ int main(int argc, char const *argv[])
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success)
     {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" <<
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" <<
             infoLog << std::endl;
     }
 
@@ -99,7 +99,7 @@ int main(int argc, char const *argv[])
     if (!success)
     {
         glGetShaderInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::LINK_FAILED\n" <<
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" <<
             infoLog << std::endl;
     }
     glDeleteShader(vertexShader);
@@ -109,9 +109,9 @@ int main(int argc, char const *argv[])
 
     // Make array of verts
     float vertices[] = {
-        -0.5f, -0.5f,  0.0f,
-         0.5f, -0.5f,  0.0f,
-         0.0f,  0.5f,  0.0f
+        -0.5f, -0.5f,  0.0f, // Left
+         0.5f, -0.5f,  0.0f, // Right
+         0.0f,  0.5f,  0.0f  // Top
     };
 
     uint VAO, VBO;
@@ -119,6 +119,8 @@ int main(int argc, char const *argv[])
     // Set up vertex buffer object
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -156,6 +158,10 @@ int main(int argc, char const *argv[])
     }
 
     // Cleanup
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteProgram(shaderProgram);
+
     glfwTerminate();
     return 0;
 }
