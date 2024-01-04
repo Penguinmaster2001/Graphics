@@ -15,20 +15,20 @@
 
 
 // Vertex shader
-const char *vertexShaderSource = "# version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
+// const char *vertexShaderSource = "# version 330 core\n"
+//     "layout (location = 0) in vec3 aPos;\n"
+//     "void main()\n"
+//     "{\n"
+//     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+//     "}\0";
 
 // Fragment shader
-const char *fragmentShaderSource = "# version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(0.4f, 0.15f, 0.1f, 1.0f);\n"
-    "}\0";
+// const char *fragmentShaderSource = "# version 330 core\n"
+//     "out vec4 FragColor;\n"
+//     "void main()\n"
+//     "{\n"
+//     "   FragColor = vec4(0.4f, 0.15f, 0.1f, 1.0f);\n"
+//     "}\0";
 
 
 
@@ -45,26 +45,31 @@ int main(int argc, char const *argv[])
 
 
 
-    // Read shaders from file
-    std::ifstream file{ argv[1] };
+    // Read shaders from files
+    std::ifstream vertexShaderFile{ argv[1] };
+    std::ifstream fragmentShaderFile{ argv[2] };
 
-    // If we couldn't open the output file stream for reading
-    if (!file)
+    // If we couldn't open one or both of the shader files stream for reading
+    if (!vertexShaderFile || !fragmentShaderFile)
     {
         // Print an error and exit
-        std::cerr << "Failed to read Vertex shader\n";
+        std::cerr << "Failed to read shader(s)\n";
         exit(1);
     }
-    
-    std::string strInput((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+    // Read both files into a string
+    std::string vertexShaderStr((std::istreambuf_iterator<char>(vertexShaderFile)), std::istreambuf_iterator<char>());
+    std::string fragmentShaderStr((std::istreambuf_iterator<char>(fragmentShaderFile)), std::istreambuf_iterator<char>());
 
     // Convert the string to a char array
-    const char* charArray = strInput.c_str();
+    const char* vertexShaderSource = vertexShaderStr.c_str();
+    const char* fragmentShaderSource = fragmentShaderStr.c_str();
 
-    return 0;
+    std::cout << vertexShaderSource << std::endl;
+    std::cout << fragmentShaderSource << std::endl;
 
-    // When file goes out of scope, the ifstream
-    // destructor will close the file
+    // When vertexShaderFile goes out of scope, the ifstream
+    // destructor will close the vertexShaderFile
 
 
     std::cout << "Vertex shader:\n";

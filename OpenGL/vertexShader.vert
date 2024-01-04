@@ -1,16 +1,8 @@
-vertex shader test
+# version 330 core
 
-ssthwqelkjth ;skvh
-line2
+layout (location = 0) in vec3 aPos;
+
+void main()
 {
-    ;''32542*&%^(*^
-    )
+    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
 }
-
-khaerh
-
-in OI398y;BY*&tp(YT8&T87T*7t*)
-
-
-
-End of vertex shader test
