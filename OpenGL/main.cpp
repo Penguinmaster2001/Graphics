@@ -32,8 +32,44 @@ const char *fragmentShaderSource = "# version 330 core\n"
 
 
 
-int main(void)
+int main(int argc, char const *argv[])
 {
+    if (argc < 3)
+    {
+        std::cout << "Usage: " << argv[0] << " <vertex shader path> <frag shader path>" << std::endl; 
+        exit(0);
+    }
+
+    std::cout << "vertex shader path:" << argv[1] << std::endl;
+    std::cout << "Vertex shader:\n";
+
+
+
+    // Read shaders from file
+    std::ifstream file{ argv[1] };
+
+    // If we couldn't open the output file stream for reading
+    if (!file)
+    {
+        // Print an error and exit
+        std::cerr << "Failed to read Vertex shader\n";
+        exit(1);
+    }
+    
+    std::string strInput((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+    // Convert the string to a char array
+    const char* charArray = strInput.c_str();
+
+    return 0;
+
+    // When file goes out of scope, the ifstream
+    // destructor will close the file
+
+
+    std::cout << "Vertex shader:\n";
+
+
     // Update context
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -59,6 +95,7 @@ int main(void)
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
 
 
 
