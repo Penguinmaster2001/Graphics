@@ -20,27 +20,6 @@ int main(int argc, char const *argv[])
         exit(0);
     }
 
-    // Read shaders from files
-    std::ifstream vertexShaderFile{ argv[1] };
-    std::ifstream fragmentShaderFile{ argv[2] };
-
-    // If we couldn't open one or both of the shader files stream for reading
-    if (!vertexShaderFile || !fragmentShaderFile)
-    {
-        // Print an error and exit
-        std::cerr << "Failed to read shader(s)\n";
-        exit(1);
-    }
-
-    // Read both files into a string
-    std::string vertexShaderStr((std::istreambuf_iterator<char>(vertexShaderFile)), std::istreambuf_iterator<char>());
-    std::string fragmentShaderStr((std::istreambuf_iterator<char>(fragmentShaderFile)), std::istreambuf_iterator<char>());
-
-    // Convert the string to a char array
-    const char* vertexShaderSource = vertexShaderStr.c_str();
-    const char* fragmentShaderSource = fragmentShaderStr.c_str();
-
-
     // Update context
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -65,57 +44,19 @@ int main(int argc, char const *argv[])
         exit(3);
     }
 
-
-    // Compile shaders
-    int success;
-    char infoLog[512];
-
-    // Vertex shader
-    uint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" <<
-            infoLog << std::endl;
-    }
-
-    // Fragment shader
-    uint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" <<
-            infoLog << std::endl;
-    }
-
-    // Link shaders
-    uint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" <<
-            infoLog << std::endl;
-    }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-
+    Shader shader(argv[1], argv[2]);
 
     // Make array of verts
+    // float vertices[] = {
+    //      0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+    //     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+    //      0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top
+    // };
     float vertices[] = {
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top
+        // positions         // colors
+         0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f, 
+         0.17f,  0.42f, 0.0f,   0.0f, 1.0f, 0.0f, 
+         0.22f,  0.36f, 0.0f,   0.0f, 0.0f, 1.0f  
     };
 
     uint VAO, VBO;
@@ -155,18 +96,14 @@ int main(int argc, char const *argv[])
         glClearColor(0.1f, 0.15f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
-
+        shader.use();
 
         float timeValue = glfwGetTime();
-        float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        int resolutionLocation = glGetUniformLocation(shaderProgram, "resolution");
-        glUniform2f(resolutionLocation, width, height);
+        float sinTime = (sin(timeValue) / 2.0f) + 0.5f;
+        float cosTime = (cos(timeValue) / 2.0f) + 0.5f;
+        shader.setFloat("sinTime", sinTime);
+        shader.setFloat("offsetx", cosTime);
+        shader.setFloat("offsety", sinTime);
 
 
         // glUseProgram(shaderProgram);
@@ -182,7 +119,7 @@ int main(int argc, char const *argv[])
     // Cleanup
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteProgram(shaderProgram);
+    glDeleteProgram(shader.ID);
 
     glfwTerminate();
     return 0;
