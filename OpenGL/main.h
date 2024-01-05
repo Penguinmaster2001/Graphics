@@ -6,6 +6,7 @@
 # include <fstream>
 # include <iostream>
 # include <string>
+# include <cmath>
 
 // Called on window resize
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

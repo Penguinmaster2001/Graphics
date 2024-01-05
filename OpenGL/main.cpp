@@ -113,9 +113,9 @@ int main(int argc, char const *argv[])
 
     // Make array of verts
     float vertices[] = {
-        -0.5f, -0.5f,  0.0f, // Left
-         0.5f, -0.5f,  0.0f, // Right
-         0.0f,  0.5f,  0.0f  // Top
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top
     };
 
     uint VAO, VBO;
@@ -132,8 +132,12 @@ int main(int argc, char const *argv[])
 
 
     // Interpret vertex data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -152,6 +156,20 @@ int main(int argc, char const *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+
+        float timeValue = glfwGetTime();
+        float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        int resolutionLocation = glGetUniformLocation(shaderProgram, "resolution");
+        glUniform2f(resolutionLocation, width, height);
+
+
+        // glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
