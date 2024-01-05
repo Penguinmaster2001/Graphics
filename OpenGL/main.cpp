@@ -12,26 +12,6 @@
 # define WIN_INIT_WID 800
 # define WIN_INIT_HEI 600
 
-
-
-// Vertex shader
-// const char *vertexShaderSource = "# version 330 core\n"
-//     "layout (location = 0) in vec3 aPos;\n"
-//     "void main()\n"
-//     "{\n"
-//     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-//     "}\0";
-
-// Fragment shader
-// const char *fragmentShaderSource = "# version 330 core\n"
-//     "out vec4 FragColor;\n"
-//     "void main()\n"
-//     "{\n"
-//     "   FragColor = vec4(0.4f, 0.15f, 0.1f, 1.0f);\n"
-//     "}\0";
-
-
-
 int main(int argc, char const *argv[])
 {
     if (argc < 3)
@@ -39,11 +19,6 @@ int main(int argc, char const *argv[])
         std::cout << "Usage: " << argv[0] << " <vertex shader path> <frag shader path>" << std::endl; 
         exit(0);
     }
-
-    std::cout << "vertex shader path:" << argv[1] << std::endl;
-    std::cout << "Vertex shader:\n";
-
-
 
     // Read shaders from files
     std::ifstream vertexShaderFile{ argv[1] };
@@ -65,15 +40,6 @@ int main(int argc, char const *argv[])
     const char* vertexShaderSource = vertexShaderStr.c_str();
     const char* fragmentShaderSource = fragmentShaderStr.c_str();
 
-    std::cout << vertexShaderSource << std::endl;
-    std::cout << fragmentShaderSource << std::endl;
-
-    // When vertexShaderFile goes out of scope, the ifstream
-    // destructor will close the vertexShaderFile
-
-
-    std::cout << "Vertex shader:\n";
-
 
     // Update context
     glfwInit();
@@ -87,21 +53,17 @@ int main(int argc, char const *argv[])
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-        return -1;
+        exit(2)
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-
 
     // Load GLAD function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
+        exit(3);
     }
-
-
 
 
     // Compile shaders
