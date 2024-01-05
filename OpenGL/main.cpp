@@ -53,7 +53,7 @@ int main(int argc, char const *argv[])
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-        exit(2)
+        exit(2);
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
