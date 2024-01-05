@@ -53,10 +53,38 @@ int main(int argc, char const *argv[])
     //      0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f // top
     // };
     float vertices[] = {
-        // positions         // colors
-         0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f, 
-         0.17f,  0.42f, 0.0f,   0.0f, 1.0f, 0.0f, 
-         0.22f,  0.36f, 0.0f,   0.0f, 0.0f, 1.0f  
+        // positions           // colors
+        0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f,
+        0.17f,  0.42f, 0.0f,   0.0f, 1.0f, 0.0f,
+        0.42f,  0.36f, 0.0f,   0.0f, 0.0f, 1.0f,
+
+        0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f,
+        0.42f,  0.36f, 0.0f,   0.0f, 0.0f, 1.0f,
+        0.48f,  0.12f, 0.0f,   0.0f, 1.0f, 0.0f,
+
+        0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f,
+        0.48f,  0.12f, 0.0f,   0.0f, 1.0f, 0.0f,
+        0.24f, -0.22f, 0.0f,   0.0f, 0.0f, 1.0f,
+
+        0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f,
+        0.24f, -0.22f, 0.0f,   0.0f, 0.0f, 1.0f,
+        0.0f , -0.5f , 0.0f,   0.0f, 1.0f, 0.0f,
+
+       -0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f,
+       -0.17f,  0.42f, 0.0f,   0.0f, 1.0f, 0.0f,
+       -0.42f,  0.36f, 0.0f,   0.0f, 0.0f, 1.0f,
+
+       -0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f,
+       -0.42f,  0.36f, 0.0f,   0.0f, 0.0f, 1.0f,
+       -0.48f,  0.12f, 0.0f,   0.0f, 1.0f, 0.0f,
+
+       -0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f,
+       -0.48f,  0.12f, 0.0f,   0.0f, 1.0f, 0.0f,
+       -0.24f, -0.22f, 0.0f,   0.0f, 0.0f, 1.0f,
+
+       -0.0f ,  0.24f, 0.0f,   1.0f, 0.0f, 0.0f,
+       -0.24f, -0.22f, 0.0f,   0.0f, 0.0f, 1.0f,
+       -0.0f , -0.5f , 0.0f,   0.0f, 1.0f, 0.0f
     };
 
     uint VAO, VBO;
@@ -81,9 +109,7 @@ int main(int argc, char const *argv[])
 
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
     glBindVertexArray(0); 
-
 
 
     // Render loop
@@ -93,22 +119,22 @@ int main(int argc, char const *argv[])
         handleInput(window);
 
         // Rendering
-        glClearColor(0.1f, 0.15f, 0.4f, 1.0f);
+        glClearColor(0.953f, 0.882f, 0.867f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.use();
 
         float timeValue = glfwGetTime();
-        float sinTime = (sin(timeValue) / 2.0f) + 0.5f;
-        float cosTime = (cos(timeValue) / 2.0f) + 0.5f;
+        float sinTime = sin(timeValue * 2.1f) * 0.1f;
+        float cosTime = cos(timeValue * 2.0f) * 0.1f;
         shader.setFloat("sinTime", sinTime);
-        shader.setFloat("offsetx", cosTime);
-        shader.setFloat("offsety", sinTime);
+        shader.setFloat("cosTime", cosTime);
+        shader.setFloat("time", timeValue);
 
 
         // glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 24);
 
 
         // Check events and swap buffers

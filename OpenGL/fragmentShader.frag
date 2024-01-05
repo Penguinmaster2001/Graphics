@@ -9,5 +9,5 @@ out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(vertPos, 0.0f, 1.0f); //, resolution.x, resolution.y, 1.0);
+    FragColor = vec4(1.0f, 0.851f, 0.855f, 0.1f); //, resolution.x, resolution.y, 1.0);
 }
